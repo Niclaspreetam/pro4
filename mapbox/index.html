@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Fly to a location based on scroll position</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+    <link href="https://fonts.googleapis.com/css?family=Berkshire+Swash" rel="stylesheet">
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+
+<style>
+#map {
+    position: fixed;
+    width:50%;
+}
+#features {
+    width: 50%;
+    margin-left: 50%;
+    font-family: sans-serif;
+    overflow-y: scroll;
+    background-color: #7c663d;
+}
+section {
+    padding:  25px 50px;
+    line-height: 25px;
+    border-bottom: 1px solid #ddd;
+    opacity: 0.25;
+    font-size: 13px;
+}
+section.active {
+    opacity: 1;
+}
+section:last-child {
+    border-bottom: none;
+    margin-bottom: 200px;
+}
+
+	h1, p{ color: #D1BD2A;
+             font-family: 'Berkshire Swash', cursive;}
+
+	
+
+	body {background-color: #7c663d;} 
+        
+		img {height: auto; 
+		 width: 100%;}
+
+</style>
+
+<div id='map'></div>
+<div id='features'>
+    <section id='baker' class='active'>
+
+ <h1>Mapbox: Ringenes Herre - The Shire</h1>
+         <h1> 1. Gandalf ankommer til Herredet. </h1>
+		 <p> Her ser man Gandalf på vej ind Herredet, som er området, hvor Hobitterne lever - Bilbo Sækker. </p>
+          <img id="img" src="1.png" alt="på vej til The shire">
+          
+    </section>
+    <section id='aldgate'>
+         <h1>2. Bilbo Sækkers hus, hvor Frodo bor</h1>
+         <p> Det er her Gandalf møder Frodo for første gang, før eventyret med ringen bliver sat i gang. </p>
+           <img id="img" src="2.jpg" alt="på vej til The shire">
+        
+     
+    </section>
+    <section id='london-bridge'>
+         <h1> 3. Gandalf, Frodo og Sam forlader Herredet </h1>
+	<p> Her tager de afsted mod nye eventyr. Dog har de Sam med sig til at hjælpe Frodo med destuere ringen. </p>
+   <img id="img" src="3.jpg" alt="på vej til The shire">
+     
+	
+
+    </section>
+  
+
+   
+  
+</div>
+	
+
+
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoibmljbGFzcHJlZXRhbSIsImEiOiJjamZpanoxZ3o0dThsMnFrN3ZrcmNvMDVnIn0.4XNXckYWVtst7D1gEimyVA';
+
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/niclaspreetam/cjfjd7347fe282ro9nutoqyui',
+    center: [175.795966, -37.815162], // Aarhus (or somewhere else)
+    zoom: 12.31, // zoom
+    pitch: 60, // skew
+    bearing: 72.51 // rotation
+});
+
+var chapters = {
+    'baker': {
+      center: [
+175.744916, -37.798140], // Aarhus (or somewhere else)
+    zoom: 20.31, // zoom
+    pitch: 60, // skew
+    bearing: 72.51 // rotation
+    },
+    'aldgate': {
+        duration: 6000,
+    center: [175.764916, -37.815140], // Aarhus (or somewhere else)
+    zoom: 20.31, // zoom
+    pitch: 60, // skew
+    bearing: 72.51 // rotation
+    },
+    'london-bridge': {
+    center: [175.795966, -37.820162], // Aarhus (or somewhere else)
+    zoom: 30.31, // zoom
+    pitch: 60, // skew
+    bearing: 72.51 // rotation
+    },
+ 
+};
+
+// On every scroll event, check which element is on screen
+window.onscroll = function() {
+    var chapterNames = Object.keys(chapters);
+    for (var i = 0; i < chapterNames.length; i++) {
+        var chapterName = chapterNames[i];
+        if (isElementOnScreen(chapterName)) {
+            setActiveChapter(chapterName);
+            break;
+        }
+    }
+};
+
+var activeChapterName = 'baker';
+function setActiveChapter(chapterName) {
+    if (chapterName === activeChapterName) return;
+
+    map.flyTo(chapters[chapterName]);
+
+    document.getElementById(chapterName).setAttribute('class', 'active');
+    document.getElementById(activeChapterName).setAttribute('class', '');
+
+    activeChapterName = chapterName;
+}
+
+function isElementOnScreen(id) {
+    var element = document.getElementById(id);
+    var bounds = element.getBoundingClientRect();
+    return bounds.top < window.innerHeight && bounds.bottom > 0;
+}
+
+   var marker  = new mapboxgl.Marker()
+    .setLngLat([175.795966, -37.820162])
+    .addTo(map);
+
+   var marker = new mapboxgl.Marker()
+    .setLngLat([175.764916, -37.815140])
+    .addTo(map);
+
+   var marker = new mapboxgl.Marker()
+    .setLngLat([175.744916, -37.798140])
+    .addTo(map);
+</script>
+
+</body>
+</html>
